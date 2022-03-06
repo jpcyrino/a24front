@@ -8,6 +8,7 @@ export default function useLogin(){
 			setLoading(true);
 			const response = await getUserFromKey(key);
 			setUser(response && response.data);
+			localStorage.setItem("user", JSON.stringify(response.data));
 			setError(!response && "Chave não encontrada!");			
 		} catch(error){
 			console.log(error);

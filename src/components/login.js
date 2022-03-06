@@ -59,6 +59,7 @@ export default function Login(){
 						size="small"
 						disabled={firstAccess}
 						autoFocus
+						type="password"
 						fullWidth/>
 				</Grid>
 
@@ -116,7 +117,9 @@ export default function Login(){
 							perca, consulte o professor. 
 							</Typography>
 							<br/>
-						<Typography variant="h5">
+						<Typography 
+							variant="h5" 
+							onClick={() => navigator.clipboard.writeText(showKey?.access_key)}>
 							{showKey?.access_key}
 							</Typography>
 
