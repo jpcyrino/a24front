@@ -1,4 +1,4 @@
-const hostName = 'http://localhost:5000';
+const hostName = 'https://jpcyrino.pythonanywhere.com';
 const timeout = 60000;
 
 export {

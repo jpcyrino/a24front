@@ -1,6 +1,7 @@
 {
   "name": "a24front",
   "version": "0.1.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@date-io/moment": "^2.13.1",
