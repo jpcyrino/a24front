@@ -2,7 +2,6 @@ import { useState, useContext, createContext, useEffect } from 'react';
 import { UserContext } from '../screens/entry-point';
 import LogoutButton from '../components/logout-button';
 import { 
-	Avatar,
 	Box,
 	Button,
 	Container, 
@@ -13,7 +12,6 @@ import {
 	LinearProgress,
 	List, 
 	ListItem,
-	ListItemAvatar,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
@@ -38,8 +36,11 @@ export default function StudentScreen(){
 	const [ updated, setUpdated ] = useState(false);
 
 	useEffect( () => {
-		if((data==null) || updated)loadStudent(user, setData, setLoading, setError);
-	}, [user, setData, setLoading, setError, loadStudent])
+		if((data==null) || updated) {
+			loadStudent(user, setData, setLoading, setError);
+			setUpdated(false);
+		}
+	}, [user, setData, setLoading, data, updated, setError, loadStudent, setUpdated])
 
 	const studentContextValues = {
 		user, 
@@ -69,6 +70,20 @@ export default function StudentScreen(){
 					</>}
 				</StudentContext.Provider>
 			}
+			<Dialog open={error}>
+				<DialogTitle>Ocorreu um erro!</DialogTitle>
+				<DialogContent>
+					<Typography variant="body1">
+					Ocorreu um erro no carregamento das atividades. Favor
+					contatar o professor!
+					</Typography>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={()=>setError(null)}>
+						OK
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Container>
 		)
 }
@@ -90,23 +105,23 @@ function Header(props){
 }
 
 function Fullfillment(){
-	const { assignment, setAssignment } = useContext(StudentContext);
+	const { assignment, setAssignment, setUpdated } = useContext(StudentContext);
 	const [ fullfillment, setFullfillment ] = useState(assignment?.fullfillment ?? null)
 
 	function handleBack(){
 		setAssignment(null);
+		setUpdated(true);
 	}
 
 	return(
 		<Box>
 			<Box sx={{float: 'left'}}>
 				<Typography variant="h6">
-					Atividade com vencimento em {moment(assignment.expiry).format("DD-MM-YY")}
+					Atividade com vencimento em {moment(assignment.expiry).format("D [de] MMMM")}
 					</Typography>
 				</Box>
 			<Box sx={{float: 'right'}}>
 				<Button
-					variant="contained"
 					onClick={handleBack}>Voltar</Button>
 				</Box>
 			<Box sx={{clear: 'both'}}/>
@@ -126,9 +141,10 @@ function ComposeAnswer(props){
 	const [ answer, setAnswer ] = useState("");
 	const [ error, setError ] = useState(null);
 	const [ sending, setSending ] = useState(false);
-	const { user, assignment, setUpdated } = useContext(StudentContext);
+	const { user, assignment } = useContext(StudentContext);
 
 	function handleSubmit(){
+		setError(null);
 		if(!answer){
 			setError("Não aceitamos respostas vazias!");
 			return false;
@@ -158,10 +174,25 @@ function ComposeAnswer(props){
 			<Box sx={{ float: 'right', margin: '5px'}}>
 				<Button
 					onClick={handleSubmit}
+					variant="contained"
 					color="primary"
 					disabled={sending}>
 					{sending ? "Enviando..." : "Enviar"}</Button>
 			</Box>
+			<Dialog open={error}>
+				<DialogTitle>Ocorreu um erro!</DialogTitle>
+				<DialogContent>
+					<Typography variant="body1">
+					Ocorreu um erro no envio de sua atividade. Favor
+					contatar o professor!
+					</Typography>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={()=>setError(null)}>
+						OK
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Box>
 		)
 }
@@ -220,7 +251,7 @@ function AssignmentList(){
 function AssignmentItem(props){
 	const { setAssignment } = useContext(StudentContext)
 	const assignment = props.assignment;
-	const expired = moment().subtract(1,'day').isAfter(assignment.expiry, "day");
+	const expired = moment().isAfter(assignment.expiry, "day");
 	const done = assignment?.fullfillment ?? false;
 	const reviewed = assignment?.fullfillment?.review.sent ?? false;
 	
@@ -243,7 +274,7 @@ function AssignmentItem(props){
 							: reviewed ? `Nota: ${assignment.fullfillment.review.grade}/100 
 										Clique para ver a correção.`
 							: done ? "Aguardando correção"
-							: "Vence em " + moment(assignment.expiry).format("DD-MM-YY")
+							: "Vence em " + moment(assignment.expiry).format("D [de] MMMM")
 						}
 						secondary={assignment.content.substring(0,80) + "..."}/>
 			</ListItemButton>

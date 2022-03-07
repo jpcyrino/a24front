@@ -1,13 +1,13 @@
 import { useState, useContext, createContext } from 'react';
 import { Box } from '@mui/material';
 import Login from '../components/login';
-import StudentScreen from './student-screen'
+import StudentScreen from './student-screen';
+import TutorScreen from './tutor-screen';
 
 const UserContext = createContext();
 
 export default function EntryPoint(){
 	const [ user, setUser ] = useState(JSON.parse(localStorage.getItem("user")));
-	console.log(user);
 
 	return(
 		<Box sx={{padding: 2}}>
@@ -22,16 +22,10 @@ export default function EntryPoint(){
 function ScreenSelector(){
 	const { user } = useContext(UserContext);
 	const role = user?.role;
-	if(role === "admin") return <AdminScreen/>;
+	if(role === "admin") return <TutorScreen/>;
 	if(role === "tutor") return <TutorScreen/>;
 	if(role === "student") return <StudentScreen/>;
 	return <Login/>;
-}
-
-function AdminScreen(){
-}
-
-function TutorScreen(){
 }
 
 

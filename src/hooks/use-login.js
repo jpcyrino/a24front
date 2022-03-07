@@ -11,7 +11,7 @@ export default function useLogin(){
 			localStorage.setItem("user", JSON.stringify(response.data));
 			setError(!response && "Chave não encontrada!");			
 		} catch(error){
-			console.log(error);
+			console.error(error);
 			setError("Ocorreu um erro!");
 		}	
 		setLoading(false);
@@ -24,7 +24,7 @@ export default function useLogin(){
 			setError(!response.data && "Chave já divulgada, contate o professor!");
 			setShowKey(response?.data);
 		} catch(error){
-			console.log(error);
+			console.error(error);
 			setError("Você não está autorizado!")
 		}
 		setLoading(false);

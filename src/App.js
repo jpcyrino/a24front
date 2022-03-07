@@ -1,5 +1,9 @@
 import { Box, Divider, Typography, Container } from '@mui/material';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateAdapter from '@mui/lab/AdapterMoment';
 import EntryPoint from './screens/entry-point';
+import moment from 'moment';
+import 'moment/locale/pt-br';
 
 function Header(){
   return(
@@ -13,14 +17,18 @@ function Header(){
 
 }
 
+moment.locale("ptBR")
+
 function App() {
   return (
     <div>
-      <Container fixed>
-        <Header/> 
-        <Divider/>
-        <EntryPoint/>
-      </Container>
+      <LocalizationProvider dateAdapter={DateAdapter} locale="ptBR">
+        <Container fixed>
+          <Header/> 
+          <Divider/>
+          <EntryPoint/>
+        </Container>
+      </LocalizationProvider>
     </div>
   );
 }
